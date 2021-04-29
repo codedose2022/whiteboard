@@ -4,7 +4,7 @@ import MainTable from './MainTable/MainTable'
 
 function DashContainer() {
     return (
-        <div>
+        <div style={{position: 'relative', marginTop: "68px"}}>
             <MainNavBar />
             <MainTable />
         </div>

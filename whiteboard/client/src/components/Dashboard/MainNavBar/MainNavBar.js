@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -14,25 +14,16 @@ import logo from "../../../images/logo.png";
 
 import AddIcon from "@material-ui/icons/Add";
 
-function MainNavBar() {
+function MainNavBar(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [anchorElm, setAnchorElm] = React.useState(null);
 
   const handleAvatarMenu = (event) => {
     setAnchorEl(event.currentTarget);
-    console.log(event.currentTarget)
-  };
-  const handleBtnMenu = (event) => {
-    setAnchorElm(event.currentTarget);
-    console.log(event.currentTarget)
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-  const handleClosebtnMenu = () => {
-    setAnchorElm(null);
   };
 
   const StyledMenu = withStyles({
@@ -64,28 +55,9 @@ function MainNavBar() {
           </div>
 
           <div className={classes.navBarRight}>
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              startIcon={<AddIcon />}
-              size="small"
-              onClick={handleBtnMenu}
-            >
-              Add new
-            </Button>
-            <StyledMenu
-              anchorEl={anchorElm}
-              open={Boolean(anchorElm)}
-              onClose={handleClosebtnMenu}
-            >
-              <MenuItem onClick={handleClosebtnMenu}>User</MenuItem>
-              <Divider />
-              <MenuItem onClick={handleClosebtnMenu}>Project</MenuItem>
-            </StyledMenu>
-
-
-            <Avatar onClick={handleAvatarMenu} className={classes.hoverIcon}>M</Avatar>
+            <Avatar onClick={handleAvatarMenu} className={classes.hoverIcon}>
+              M
+            </Avatar>
             <StyledMenu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}

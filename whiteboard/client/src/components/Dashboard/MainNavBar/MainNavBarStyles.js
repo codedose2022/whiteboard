@@ -16,7 +16,6 @@ export default makeStyles((theme) => ({
   navBarRight:{
     display: 'flex',
     justifyContent: 'space-between',
-    width: '15%',
   },
   hoverIcon:{
     cursor: 'pointer',

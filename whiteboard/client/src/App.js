@@ -1,12 +1,19 @@
-import React from 'react';
-import DashContainer from './components/Dashboard/DashContainer';
-
+import React, { useEffect } from "react";
+import DashContainer from "./components/Dashboard/DashContainer";
+import {useDispatch} from "react-redux";
+import { getBoardData } from "./actions/boardData";
 const App = () => {
-    return (
-        <div>
-            <DashContainer />
-        </div>
-    )
-}
+  const dispatch = useDispatch();
 
-export default App
+  useEffect(() => {
+    dispatch(getBoardData());
+  }, [dispatch]);
+
+  return (
+    <div>
+      <DashContainer />
+    </div>
+  );
+};
+
+export default App;
