@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { DataGrid, GridToolbar } from "@material-ui/data-grid";
 import {
   Grid,
@@ -9,6 +9,7 @@ import {
   InputLabel,
   Button,
   CircularProgress,
+  Typography,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -18,18 +19,27 @@ import * as Yup from "yup";
 import useStyles from "./MainTableStyles";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { addProject } from "../../../actions/boardData";
+import {
+  addProject,
+  updateProject,
+  deletePost,
+} from "../../../actions/boardData";
 import moment from "moment";
-import ColoredCell from "./ColoredCell";
 import clsx from "clsx";
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from "@material-ui/icons/Edit";
 
-
-
-function MainTable(props) {
+function MainTable(currentId, setCurrentId) {
   const boardData = useSelector((state) => state.boardData);
+  const [project, setProject] = useState({
+    projectName: "",
+    projectEngr: "",
+    tlExpiry: "",
+    releaseDate: "",
+  });
+
   const [addProjectPop, setAddProjectPop] = useState(false);
-  const [currentId, setCurrentId] = useState(null)
+  const [deletProjectPop, setDeletProjectPop] = useState(false);
+  const [projectId, setProjectId] = useState("");
   const classes = useStyles();
   const dispatch = useDispatch();
   const formRef = useRef();
@@ -38,6 +48,11 @@ function MainTable(props) {
   };
   const handleClose = () => {
     setAddProjectPop(false);
+    setDeletProjectPop(false);
+  };
+  const deleteProject = (params) => {
+    setDeletProjectPop(true);
+    setProjectId(params.row.pid)
   };
 
   const daysBtwn = (aDate, now) => {
@@ -54,12 +69,48 @@ function MainTable(props) {
         <>
           {params.value}
           <div className={classes.absoluteBtn}>
-          <IconButton size="small" className={classes.edit} onClick={() => {}}>
-            <EditIcon />
-          </IconButton>
-          <IconButton size="small" className={classes.delete}>
-            <DeleteIcon />
-          </IconButton>
+            <IconButton
+              size="small"
+              className={classes.delete}
+              onClick={() => deleteProject(params)}
+              // onClick={() => console.log(params.row.pid)}
+            >
+              <DeleteIcon />
+            </IconButton>
+
+            <ModalPop
+              width="400px"
+              title="Delete Project"
+              isOpen={deletProjectPop}
+              handleClose={handleClose}
+              content={
+                <Grid container>
+                  <Grid item sm={12}>
+                    <Typography variant="h6">
+                      Are you sure you want to delete this project?
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    sm={12}
+                    style={{
+                      marginTop: "1rem",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => dispatch(deletePost(projectId), setDeletProjectPop(false))}
+                      // onClick={() => console.log(projectId)}
+                    >
+                      Confirm
+                    </Button>
+                  </Grid>
+                </Grid>
+              }
+            />
           </div>
         </>
       ),
@@ -100,6 +151,7 @@ function MainTable(props) {
   boardData.map((project) => {
     let projects = {
       id: count,
+      pid: project._id,
       projectName: project.projectName,
       userName: project.projectEngr,
       tlExpiry: moment(project.tlExpiry).format("MM-DD-YYYY"),
@@ -134,6 +186,7 @@ function MainTable(props) {
       >
         <DataGrid
           rows={projectData}
+          pid={projectData.pid}
           columns={columns}
           components={{
             Toolbar: GridToolbar,
@@ -164,7 +217,6 @@ function MainTable(props) {
               })}
               onSubmit={(values, { setSubmitting }) => {
                 setTimeout(() => {
-                  // setColor(values.tlExpiry)
                   dispatch(addProject(values, setSubmitting));
                   setSubmitting(false);
                   setAddProjectPop(false);
@@ -172,7 +224,7 @@ function MainTable(props) {
               }}
             >
               {(formik) => (
-                <Form onSubmit={formik.handleSubmit}>
+                <Form onSubmit={formik.handleSubmit} currentid={currentId}>
                   <FormControl className={classes.formControl} fullWidth>
                     <Field
                       as={TextField}

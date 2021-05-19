@@ -27,8 +27,7 @@ const ModalPop = ({
     <Dialog
       open={isOpen}
       onClose={handleClose}
-      maxWidth={width}
-      fullWidth
+      // maxWidth={width}
       disableBackdropClick
     >
       <DialogTitle id="alert-dialog-slide-title" className={classes.modalTitle}>
